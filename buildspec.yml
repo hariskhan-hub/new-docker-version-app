@@ -1,0 +1,31 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 956214677418.dkr.ecr.eu-north-1.amazonaws.com
+
+  build:
+    commands:
+      - echo Building Docker images...
+      - docker build -t frontend ./frontend
+      - docker build -t backend ./backend
+      - docker tag frontend:latest 956214677418.dkr.ecr.eu-north-1.amazonaws.com/frontend:latest
+      - docker tag backend:latest 956214677418.dkr.ecr.eu-north-1.amazonaws.com/backend:latest
+
+  post_build:
+    commands:
+      - echo Pushing Docker images...
+      - docker push 956214677418.dkr.ecr.eu-north-1.amazonaws.com/frontend:latest
+      - docker push 956214677418.dkr.ecr.eu-north-1.amazonaws.com/backend:latest
+      - echo Creating imagedefinitions.json...
+      - printf '[{"name":"frontend","imageUri":"%s"}, {"name":"backend","imageUri":"%s"}]' \
+        956214677418.dkr.ecr.eu-north-1.amazonaws.com/frontend:latest \
+        956214677418.dkr.ecr.eu-north-1.amazonaws.com/backend:latest > imagedefinitions.json
+
+artifacts:
+  files:
+    - imagedefinitions.json
+
+
