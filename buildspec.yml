@@ -20,7 +20,7 @@ phases:
       - docker push 956214677418.dkr.ecr.eu-north-1.amazonaws.com/forecsfrontend:latest
       - docker push 956214677418.dkr.ecr.eu-north-1.amazonaws.com/forecsbackend:latest
       - echo Creating imagedefinitions.json...
-      - printf '[{"name":"frontend","imageUri":"%s"},{"name":"backend","imageUri":"%s"}]' \
+      - printf '[{"name":"frontend","imageUri":"956214677418.dkr.ecr.eu-north-1.amazonaws.com/forecsfrontend:latest"},{"name":"backend","imageUri":"956214677418.dkr.ecr.eu-north-1.amazonaws.com/forecsbackend:latest"}]' \
           956214677418.dkr.ecr.eu-north-1.amazonaws.com/forecsfrontend:latest \
           956214677418.dkr.ecr.eu-north-1.amazonaws.com/forecsbackend:latest \
         
