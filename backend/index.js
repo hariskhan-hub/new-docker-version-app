@@ -7,6 +7,11 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+// Add root route for testing
+app.get('/', (req, res) => {
+  res.json({ message: 'Backend server is running' });
+});
+
 // Redis Configuration
 const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
 const REDIS_PORT = process.env.REDIS_PORT || 6379;
@@ -68,7 +73,6 @@ app.post('/signup', async (req, res) => {
       return res.status(503).json({ message: 'Service unavailable: Redis not connected' });
     }
 
-    // Check if user already exists
     const exists = await client.exists(`user:${username}`);
     if (exists) {
       return res.status(409).json({ message: 'Username already exists' });
@@ -131,7 +135,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(5000, () => {
-  console.log('Backend running on port 5000');
+// ✅ This is the correct listen block for ECS/Fargate
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Backend running on port ${PORT}`);
   console.log('Redis URL:', REDIS_URL);
 });
+
