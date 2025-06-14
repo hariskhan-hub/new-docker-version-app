@@ -1,7 +1,7 @@
 version: 0.2
 #test change
 #test
-#kuch b
+#tested
 phases:
   pre_build:
     commands:
