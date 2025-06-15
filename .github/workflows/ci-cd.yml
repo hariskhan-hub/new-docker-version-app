@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: 🧾 Checkout code
       uses: actions/checkout@v3
 
-    - name: Configure AWS
+    - name: 🔐 Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -20,30 +20,31 @@ jobs:
         aws-region: ${{ secrets.AWS_REGION }}
 
     # ⚛️ React App (Frontend)
-    - name: Install frontend dependencies
+    - name: 📦 Install frontend dependencies
       working-directory: frontend
       run: npm install
 
-    - name: Build frontend
+    - name: 🏗️ Build frontend
       working-directory: frontend
       run: npm run build
 
-    - name: Upload frontend to S3
-      run: aws s3 sync frontend/build s3://my-frontend-bucket-blog-app --delete
+    - name: ☁️ Upload frontend to S3
+      run: aws s3 sync frontend/build s3://${{ secrets.S3_BUCKET_NAME }} --delete
 
     # 🐳 Dockerized Backend
-    - name: Login to ECR
-      run: aws ecr get-login-password | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO_URI }}
+    - name: 🔐 Login to Amazon ECR
+      run: |
+        aws ecr get-login-password | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO_URI }}
 
-    - name: Build Docker image
+    - name: 🛠️ Build Docker image for backend
       working-directory: backend
       run: docker build -t ${{ secrets.ECR_REPO_URI }} .
 
-    - name: Push Docker image to ECR
+    - name: 🚚 Push Docker image to ECR
       run: docker push ${{ secrets.ECR_REPO_URI }}
 
-    # 🚀 Update ECS
-    - name: Deploy to ECS
+    # 🚀 Update ECS service
+    - name: 🔄 Trigger ECS deployment
       run: |
         aws ecs update-service \
           --cluster ${{ secrets.ECS_CLUSTER }} \
