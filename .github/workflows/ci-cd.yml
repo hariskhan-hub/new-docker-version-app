@@ -34,7 +34,7 @@ jobs:
     # 🐳 Dockerized Backend
     - name: 🔐 Login to Amazon ECR
       run: |
-        aws ecr get-login-password | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO_URI }}
+           aws ecr get-login-password | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
 
     - name: 🛠️ Build Docker image for backend
       working-directory: backend
