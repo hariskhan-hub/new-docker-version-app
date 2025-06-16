@@ -34,10 +34,19 @@ jobs:
           docker build -t $BACKEND_IMAGE ./backend
           docker push $BACKEND_IMAGE
 
-      - name: Update ECS Service
+      - name: Update ECS Services (Frontend and Backend)
         run: |
+          # Update Frontend ECS Service
           aws ecs update-service \
-            --cluster ${{ secrets.ECS_CLUSTER }} \
-            --service ${{ secrets.ECS_SERVICE }} \
+            --cluster "${{ secrets.ECS_CLUSTER }}" \
+            --service "frontend33-task-service-nbnp1cha" \
             --force-new-deployment \
-            --region ${{ secrets.AWS_REGION }}
+            --region "${{ secrets.AWS_REGION }}"
+
+          # Update Backend ECS Service
+          aws ecs update-service \
+            --cluster "${{ secrets.ECS_CLUSTER }}" \
+            --service "backend33-task-service-qb2vy0f9" \
+            --force-new-deployment \
+            --region "${{ secrets.AWS_REGION }}"
+
